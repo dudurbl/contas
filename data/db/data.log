@@ -1,0 +1,12 @@
+/*C1*/SET SCHEMA PUBLIC
+CONNECT USER SA
+drop table produtos
+create table usuario (\u000aidusuario integer not null,\u000anome varchar,\u000asaldo double\u000a\u000a)
+drop table usuario
+create table usuario (\u000aidusuario integer not null,\u000anome varchar,\u000asaldo double\u000a)
+ALTER TABLE usuario\u000aADD PRIMARY KEY (idusuario)
+create table contas(\u000aidconta integer not null,\u000adescricao varchar,\u000avalor double,\u000adata_vencimento date,\u000adata_pagamento date,\u000asituacao integer\u000a\u000a)
+drop table contas
+create table contas(\u000aidconta integer not null,\u000adescricao varchar,\u000avalor double,\u000adata_vencimento date,\u000adata_pagamento date,\u000asituacao integer,\u000aidusuario integer\u000a)
+alter table contas \u000aadd primary key (idconta)
+ALTER TABLE contas\u000aADD FOREIGN KEY (idusuario)\u000aREFERENCES usuario(idusuario)
