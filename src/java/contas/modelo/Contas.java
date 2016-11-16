@@ -9,7 +9,6 @@ public class Contas {
     String descricao;
     double valor;
     Date data_pagamento,data_vencimento;
-    int situacao; // 1 = á vencer 2= Pago 3 = vencido 
 
     public int getIdconta() {
         return idconta;
@@ -59,12 +58,5 @@ public class Contas {
         this.data_vencimento = data_vencimento;
     }
 
-    public int getSituacao() {
-        return situacao;
-    }
-
-    public void setSituacao(int situacao) {
-        this.situacao = situacao;
-    }
 
 }
