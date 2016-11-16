@@ -11,7 +11,8 @@
         <form method="POST" action="salvar">
             Código: <input type="text" name="codigo"><br>
             Descrição: <input type="text" name="descricao" ><br>
-            Data de vencimento <input type="text" name="data_vencimento"><br>
+            Valor: <input type="text" name="valor" ><br>
+            Data de vencimento <input type="date" name="data_vencimento"><br>
             <button>Salvar</button>
         </form>
         <br/>

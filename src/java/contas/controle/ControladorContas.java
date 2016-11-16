@@ -1,9 +1,13 @@
 package contas.controle;
 
 
+import contas.modelo.Contas;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,11 +18,11 @@ import javax.servlet.http.HttpServletResponse;
 public class ControladorContas extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, Exception {
         String jsp = null;
         if (request.getRequestURI().endsWith("/salvar")) {
             jsp = salvar(request, response);
-        } else if (request.getRequestURI().endsWith("/listar")) {
+        } /*else if (request.getRequestURI().endsWith("/listar")) {
             jsp = listar(request, response);
         } else if (request.getRequestURI().endsWith("/novo")) {
             jsp = novo(request, response);
@@ -27,16 +31,8 @@ public class ControladorContas extends HttpServlet {
         } else if (request.getRequestURI().endsWith("/remover")) {
             jsp = remover(request, response);
         } else if (request.getRequestURI().endsWith("/concluir")) {
-            jsp = concluir(request, response);
-        } else if (request.getRequestURI().endsWith("/notas")) {
-            jsp = notas(request, response);
-        } else if (request.getRequestURI().endsWith("/salvarNota")) {
-            jsp = salvarNota(request, response);
-        } else if (request.getRequestURI().endsWith("/excluirNota")) {
-            jsp = excluirNota(request, response);
-        } else if (request.getRequestURI().endsWith("/editarNota")) {
-            jsp = editarNota(request, response);
-        } else {
+            jsp = pagar(request, response);
+        }  */else {
             jsp = null;
         }
 
@@ -61,7 +57,11 @@ public class ControladorContas extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(ControladorContas.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -76,7 +76,11 @@ public class ControladorContas extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(ControladorContas.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -89,25 +93,28 @@ public class ControladorContas extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private String salvar(HttpServletRequest request, HttpServletResponse response) {
+    private String salvar(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String sCodigo = request.getParameter("codigo");
         Integer codigo = Integer.valueOf(sCodigo);
         String descricao = request.getParameter("descricao");
-        String sEstagio = request.getParameter("estagio");
-        Integer estagio = Integer.valueOf(sEstagio);
-
-        Atividade atividade = RepositorioAtividade.getAtividade(codigo);
-        if (atividade == null) {
-            atividade = new Atividade();
-            atividade.setCodigo(codigo);
-        }
-        atividade.setDescricao(descricao);
-        atividade.setDataCadastro(new Date());
-        atividade.setEstagio(estagio);
-        RepositorioAtividade.salvar(atividade);
+        String sValor = request.getParameter("valor");
+        Double valor = Double.valueOf(sValor);
+        String sDataVencimento = request.getParameter("data_vencimento");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        Date dataVencimento = formatter.parse(sDataVencimento);
+        
+        /*Contas conta = RepositorioContas.getConta(codigo);
+        if (conta == null) {*/
+           Contas conta = new Contas();
+            conta.setIdconta(codigo);
+       // }
+        conta.setDescricao(descricao);
+        conta.setValor(valor);
+        conta.setData_vencimento(dataVencimento);
+        RepositorioContas.inserir(conta);
         return "listar";
     }
-
+/*
     private String listar(HttpServletRequest request, HttpServletResponse response) {
         List<Atividade> lista = RepositorioAtividade.getAtividades();
         request.setAttribute("lista", lista);
@@ -138,61 +145,16 @@ public class ControladorContas extends HttpServlet {
         return "listar";
     }
 
-    private String concluir(HttpServletRequest request, HttpServletResponse response) {
+    private String pagar(HttpServletRequest request, HttpServletResponse response) {
         String sCodigo = request.getParameter("codigo");
         Integer codigo = Integer.valueOf(sCodigo);
         Atividade atv = RepositorioAtividade.getAtividade(codigo);
         atv.setEstagio(100);
         RepositorioAtividade.salvar(atv);
         return "listar";
-    }
+    }*/
 
-    private String notas(HttpServletRequest request, HttpServletResponse response) {
-        String sCodigo = request.getParameter("codigo");
-        Integer codigo = Integer.valueOf(sCodigo);
-        request.setAttribute("e", RepositorioAtividade.getAtividade(codigo));
-        return "notas.jsp";
-    }
+  
 
-    private String salvarNota(HttpServletRequest request, HttpServletResponse response) {
-        String sCodigoAtv = request.getParameter("codigoAtv");
-        Integer codigoAtv = Integer.valueOf(sCodigoAtv);
-        String sCodigo = request.getParameter("codigo");
-        Integer codigo = Integer.valueOf(sCodigo);
-        String sNota = request.getParameter("nota");
-
-        Atividade atividade = RepositorioAtividade.getAtividade(codigoAtv);
-        Nota nota = atividade.getNota(codigo);
-        if (nota == null) {
-            nota = new Nota();
-            nota.setCodigo(codigo);
-        }
-        nota.setNota(sNota);
-        nota.setData(new Date());
-        atividade.addNota(nota);
-        RepositorioAtividade.salvar(atividade);
-        return "listar";
-    }
-
-    private String excluirNota(HttpServletRequest request, HttpServletResponse response) {
-        String sCodigoAtv = request.getParameter("codigoAtv");
-        Integer codigoAtv = Integer.valueOf(sCodigoAtv);
-        String sCodigo = request.getParameter("codigo");
-        Integer codigo = Integer.valueOf(sCodigo);
-        Nota n = RepositorioAtividade.getAtividade(codigoAtv).getNota(codigo);
-        RepositorioAtividade.getAtividade(codigoAtv).getNotas().remove(n);
-        request.setAttribute("e", RepositorioAtividade.getAtividade(codigoAtv));
-        return "notas.jsp";
-    }
-
-    private String editarNota(HttpServletRequest request, HttpServletResponse response) {
-        String sCodigoAtv = request.getParameter("codigoAtv");
-        Integer codigoAtv = Integer.valueOf(sCodigoAtv);
-        String sCodigo = request.getParameter("codigo");
-        Integer codigo = Integer.valueOf(sCodigo);
-        Nota n = RepositorioAtividade.getAtividade(codigoAtv).getNota(codigo);
-        request.setAttribute("e", RepositorioAtividade.getAtividade(codigoAtv));
-        request.setAttribute("n", n);
-        return "notas.jsp";
-    }
+    
 }
