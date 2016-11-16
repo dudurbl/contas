@@ -22,9 +22,9 @@ public class ControladorContas extends HttpServlet {
         String jsp = null;
         if (request.getRequestURI().endsWith("/salvar")) {
             jsp = salvar(request, response);
-        } /*else if (request.getRequestURI().endsWith("/listar")) {
+        } else if (request.getRequestURI().endsWith("/listar")) {
             jsp = listar(request, response);
-        } else if (request.getRequestURI().endsWith("/novo")) {
+        } /*else if (request.getRequestURI().endsWith("/novo")) {
             jsp = novo(request, response);
         } else if (request.getRequestURI().endsWith("/editar")) {
             jsp = editar(request, response);
@@ -112,15 +112,15 @@ public class ControladorContas extends HttpServlet {
         conta.setValor(valor);
         conta.setData_vencimento(dataVencimento);
         RepositorioContas.inserir(conta);
-        return "listar";
-    }
-/*
-    private String listar(HttpServletRequest request, HttpServletResponse response) {
-        List<Atividade> lista = RepositorioAtividade.getAtividades();
-        request.setAttribute("lista", lista);
-        return "listagem.jsp";
+        return "cadastro.jsp";
     }
 
+    private String listar(HttpServletRequest request, HttpServletResponse response) {
+       // List<Atividade> lista = RepositorioAtividade.getAtividades();
+        //request.setAttribute("lista", lista);
+        return "cadastro.jsp";
+    }
+/*
     private String novo(HttpServletRequest request, HttpServletResponse response) {
         List<Contas> lista = RepositorioAtividade.getAtividades();
         request.setAttribute("lista", lista);

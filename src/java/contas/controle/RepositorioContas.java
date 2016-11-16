@@ -19,12 +19,13 @@ public class RepositorioContas {
         rs.next();
         int proximoCodigo = rs.getInt(1);*/
         
-        String sql = "insert into  contas values (?, ?, ?,?)";
+        String sql = "insert into  contas (idconta,descricao,valor, data_vencimento) values (?, ?, ?, ?);";
         PreparedStatement ps = c.prepareStatement(sql);
         ps.setInt(1, contas.getIdconta() );
         ps.setString(2, contas.getDescricao());
         ps.setDouble(3, contas.getValor());
-        ps.setDate(4, (Date) contas.getData_vencimento());
+        
+        ps.setDate(4, new java.sql.Date(contas.getData_vencimento().getTime()));
         ps.execute();
     }
 /*
