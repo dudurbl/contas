@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(name = "ControlarAutores", urlPatterns = {"/salvar", "/listar", "/novo", "/editar", "/remover", "/concluir", "/notas", "/salvarNota", "/excluirNota", "/editarNota"})
+@WebServlet(name = "ControlarAutores", urlPatterns = {"/salvar", "/listar", "/novo", "/editar", "/remover", "/pagar", "/notas", "/salvarNota", "/excluirNota", "/editarNota"})
 public class ControladorContas extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -24,15 +24,15 @@ public class ControladorContas extends HttpServlet {
             jsp = salvar(request, response);
         } else if (request.getRequestURI().endsWith("/listar")) {
             jsp = listar(request, response);
-        } /*else if (request.getRequestURI().endsWith("/novo")) {
-            jsp = novo(request, response);
+        } else if (request.getRequestURI().endsWith("/pagar")) {
+            jsp = pagar(request, response);
         } else if (request.getRequestURI().endsWith("/editar")) {
             jsp = editar(request, response);
         } else if (request.getRequestURI().endsWith("/remover")) {
             jsp = remover(request, response);
-        } else if (request.getRequestURI().endsWith("/concluir")) {
-            jsp = pagar(request, response);
-        }  */else {
+        } else if (request.getRequestURI().endsWith("/novo")) {
+            jsp = novo(request, response);
+        }  else {
             jsp = null;
         }
 
@@ -94,24 +94,30 @@ public class ControladorContas extends HttpServlet {
     }// </editor-fold>
 
     private String salvar(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Contas conta = new Contas();
+        
+        if(!request.getParameterMap().containsKey("codigo")){
         String sCodigo = request.getParameter("codigo");
         Integer codigo = Integer.valueOf(sCodigo);
+        conta = RepositorioContas.getConta(codigo);
+        }
         String descricao = request.getParameter("descricao");
         String sValor = request.getParameter("valor");
         Double valor = Double.valueOf(sValor);
         String sDataVencimento = request.getParameter("data_vencimento");
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-        Date dataVencimento = formatter.parse(sDataVencimento);
+        SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
+        Date dataVencimento = formater.parse(sDataVencimento);
+        SimpleDateFormat AppDateFormat = new SimpleDateFormat("dd-MM-yyyy");
         
-        /*Contas conta = RepositorioContas.getConta(codigo);
-        if (conta == null) {*/
-           Contas conta = new Contas();
-            conta.setIdconta(codigo);
-       // }
+        
         conta.setDescricao(descricao);
         conta.setValor(valor);
         conta.setData_vencimento(dataVencimento);
+        if(!request.getParameterMap().containsKey("codigo")){
+            RepositorioContas.atualizar(conta);
+        }else{
         RepositorioContas.inserir(conta);
+        }
         return "listar";
     }
 
@@ -120,41 +126,36 @@ public class ControladorContas extends HttpServlet {
         request.setAttribute("lista", lista);
         return "listagem.jsp";
     }
-/*
-    private String novo(HttpServletRequest request, HttpServletResponse response) {
-        List<Contas> lista = RepositorioAtividade.getAtividades();
-        request.setAttribute("lista", lista);
-        return "cadastro.jsp";
-    }
 
-    private String editar(HttpServletRequest request, HttpServletResponse response) {
+    private String editar(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String sCodigo = request.getParameter("codigo");
         Integer codigo = Integer.valueOf(sCodigo);
-        Atividade a = RepositorioAtividade.getAtividade(codigo);
-        if (new Integer(100).compareTo(a.getEstagio()) == 0) {
-            return "listar";
-        }
-        request.setAttribute("e", a);
+        Contas c = RepositorioContas.getConta(codigo);
+        request.setAttribute("conta", c);
         return "novo";
     }
 
-    private String remover(HttpServletRequest request, HttpServletResponse response) {
+    private String remover(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String sCodigo = request.getParameter("codigo");
         Integer codigo = Integer.valueOf(sCodigo);
-        RepositorioAtividade.getAtividades().remove(RepositorioAtividade.getAtividade(codigo));
+        RepositorioContas.excluir(codigo);
         return "listar";
     }
 
-    private String pagar(HttpServletRequest request, HttpServletResponse response) {
+    private String pagar(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String sCodigo = request.getParameter("codigo");
         Integer codigo = Integer.valueOf(sCodigo);
-        Atividade atv = RepositorioAtividade.getAtividade(codigo);
-        atv.setEstagio(100);
-        RepositorioAtividade.salvar(atv);
+        RepositorioContas.pagarConta(codigo);
         return "listar";
-    }*/
+    }
 
-  
+      private String novo(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        List<Contas> listaPagar = RepositorioContas.getContasAPagar();
+        List<Contas> listaPago = RepositorioContas.getContasPagas();
+        request.setAttribute("listaPagar", listaPagar);
+        request.setAttribute("listaPago", listaPago);
+        return "cadastro.jsp";
+    }
 
     
 }

@@ -10,12 +10,12 @@ public class Contas {
     double valor;
     Date data_pagamento,data_vencimento;
 
-    public Contas(int idconta, String descricao, double valor, Date data_pagamento, Date data_vencimento) {
+    public Contas(int idconta, String descricao, double valor, Date data_vencimento, Date data_pagamento) {
         this.idconta = idconta;
         this.descricao = descricao;
         this.valor = valor;
-        this.data_pagamento = data_pagamento;
         this.data_vencimento = data_vencimento;
+        this.data_pagamento = data_pagamento;
     }
 
     public Contas() {

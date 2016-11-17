@@ -1,5 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-
 <!DOCTYPE html>
 <html>
     <head>
@@ -9,10 +9,12 @@
     <body>
         <h1>Cadastro de contas</h1>
         <form method="POST" action="salvar">
-            Código: <input type="text" name="codigo"><br>
-            Descrição: <input type="text" name="descricao" ><br>
-            Valor: <input type="text" name="valor" ><br>
-            Data de vencimento <input type="date" name="data_vencimento"><br>
+            <c:if test="%{#parameters.conta == null}">
+                Código: <input type="text" name="codigo" disabled="true" value="${conta.idconta}"><br>
+            </c:if>
+            Descrição: <input type="text" name="descricao" value="${conta.descricao}"><br>
+            Valor: <input type="text" name="valor" value="${conta.valor}"><br>
+            Data de vencimento <input type="date" name="data_vencimento" value="${conta.data_vencimento}"><br>
             <button>Salvar</button>
         </form>
         <br/>
@@ -27,16 +29,16 @@
                 <th id="dataVencimento">Data de Vencimento</th>
                 <th>Ações</th>
             <tr>    
-            <c:forEach var="f" items="${lista}" >
+            <c:forEach var="pg" items="${listaPagar}" >
                 <tr>
-                    <td>${f.codigo}</td>
-                    <td>${f.descricao}</td>
-                    <td>${f.valor}%</td>
-                    <td>${f.dataVencimento}</td>
+                    <td>${pg.idconta}</td>
+                    <td>${pg.descricao}</td>
+                    <td>R$ ${pg.valor}</td>
+                    <td>${pg.data_vencimento}</td>
                     <td>
-                        <a href="editar?codigo=${f.codigo}">Editar</a> - 
-                        <a href="editar?codigo=${f.codigo}">Pagar</a> - 
-                        <a href="remover?codigo=${f.codigo}">Excluir</a>
+                        <a href="editar?codigo=${pg.idconta}">Editar</a> - 
+                        <a href="pagar?codigo=${pg.idconta}">Pagar</a> - 
+                        <a href="remover?codigo=${pg.idconta}">Excluir</a>
                     </td>
                 </tr>
             </c:forEach>
@@ -53,15 +55,15 @@
                 <th id="dataVencimento">Data de Pagamento</th>
                 <th>Ações</th>
             <tr>    
-            <c:forEach var="f" items="${lista}" >
+            <c:forEach var="pg" items="${listaPago}" >
                 <tr>
-                    <td>${pg.codigo}</td>
+                    <td>${pg.idconta}</td>
                     <td>${pg.descricao}</td>
-                    <td>${pg.valor}%</td>
-                    <td>${pg.dataVencimento}</td>
-                    <td>${pg.dataPagamento}</td>
+                    <td>R$ ${pg.valor}</td>
+                    <td>${pg.data_vencimento}</td>
+                    <td>${pg.data_pagamento}</td>
                     <td>
-                        <a href="remover?codigo=${pg.codigo}">Excluir</a>
+                        <a href="remover?codigo=${pg.idconta}">Excluir</a>
                     </td>
                 </tr>
             </c:forEach>
