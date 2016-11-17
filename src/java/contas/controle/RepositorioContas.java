@@ -49,21 +49,21 @@ public class RepositorioContas {
         ps.setInt(1, codigo);
         ps.execute();
     }
-
-    public static List<Contas> getProdutos() throws Exception {
-        List<Contas> produtos = new ArrayList<>();
+*/
+    public static List<Contas> getContas() throws Exception {
+        List<Contas> contas = new ArrayList<>();
         Connection c = Conexao.getConexao();
-        String sql = "select codigo, descricao from produtos";
+        String sql = "select idconta, descricao, valor, data_vencimento, data_pagamento from contas";
         PreparedStatement ps = c.prepareStatement(sql);
         ResultSet rs = ps.executeQuery();
         while(rs.next()) {
             Contas produto = 
-                    new Contas(rs.getInt("codigo"), rs.getString("descricao"));
-            produtos.add(produto);
+                    new Contas(rs.getInt("idconta"), rs.getString("descricao"), rs.getDouble("valor"), rs.getDate("data_vencimento"), rs.getDate("data_pagamento"));
+            contas.add(produto);
         }
-        return produtos;
+        return contas;
     }
-    
+    /*
     public static Contas getConta(Integer codigo) throws Exception {
         Contas conta = null;
         Connection c = Conexao.getConexao();

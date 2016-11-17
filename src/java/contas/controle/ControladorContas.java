@@ -112,13 +112,13 @@ public class ControladorContas extends HttpServlet {
         conta.setValor(valor);
         conta.setData_vencimento(dataVencimento);
         RepositorioContas.inserir(conta);
-        return "cadastro.jsp";
+        return "listar";
     }
 
-    private String listar(HttpServletRequest request, HttpServletResponse response) {
-       // List<Atividade> lista = RepositorioAtividade.getAtividades();
-        //request.setAttribute("lista", lista);
-        return "cadastro.jsp";
+    private String listar(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        List<Contas> lista = RepositorioContas.getContas();
+        request.setAttribute("lista", lista);
+        return "listagem.jsp";
     }
 /*
     private String novo(HttpServletRequest request, HttpServletResponse response) {

@@ -10,6 +10,18 @@ public class Contas {
     double valor;
     Date data_pagamento,data_vencimento;
 
+    public Contas(int idconta, String descricao, double valor, Date data_pagamento, Date data_vencimento) {
+        this.idconta = idconta;
+        this.descricao = descricao;
+        this.valor = valor;
+        this.data_pagamento = data_pagamento;
+        this.data_vencimento = data_vencimento;
+    }
+
+    public Contas() {
+    }
+    
+    
     public int getIdconta() {
         return idconta;
     }
