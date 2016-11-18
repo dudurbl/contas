@@ -14,15 +14,11 @@ public class RepositorioContas {
     public static void inserir(Contas contas) throws Exception {
         Connection c = Conexao.getConexao();
         
-        String sqlProximoCodigo = "select coalesce(max(idconta), 0) + 1 from contas";
-        PreparedStatement psCodigo = c.prepareStatement(sqlProximoCodigo);
-        ResultSet rs = psCodigo.executeQuery();
-        rs.next();
-        int proximoCodigo = rs.getInt(1);
+       // int proximoCodigo = getPproximoId();
         
         String sql = "insert into  contas (idconta,descricao,valor, data_vencimento) values (?, ?, ?, ?);";
         PreparedStatement ps = c.prepareStatement(sql);
-        ps.setInt(1, proximoCodigo );
+        ps.setInt(1, contas.getIdconta() );
         ps.setString(2, contas.getDescricao());
         ps.setDouble(3, contas.getValor());
         ps.setDate(4, new java.sql.Date(contas.getData_vencimento().getTime()));
@@ -31,11 +27,13 @@ public class RepositorioContas {
 
     public static void atualizar(Contas conta) throws Exception {
         Connection c = Conexao.getConexao();
-        String sql = "update contas set descricao=?, valor=?, data_vencimento=? where codigo=?";
+        
+        String sql = "update contas set descricao=?, valor=?, data_vencimento=? where idconta=?";
         PreparedStatement ps = c.prepareStatement(sql);
         ps.setString(1, conta.getDescricao());
         ps.setDouble(2, conta.getValor());
         ps.setDate(3, new java.sql.Date(conta.getData_vencimento().getTime()));
+        ps.setInt(4, conta.getIdconta());
         ps.execute();
     }
     
@@ -99,6 +97,18 @@ public class RepositorioContas {
         ps.setInt(2, codigo);
         ps.execute();
         
+    }
+    
+    public static int getPproximoId() throws Exception{
+        Connection c = Conexao.getConexao();
+        
+        String sqlProximoCodigo = "select coalesce(max(idconta), 0) + 1 from contas";
+        PreparedStatement psCodigo = c.prepareStatement(sqlProximoCodigo);
+        ResultSet rs = psCodigo.executeQuery();
+        rs.next();
+        int proximoCodigo = rs.getInt(1);
+        
+        return proximoCodigo;
     }
     
     public static Contas getConta(Integer codigo) throws Exception {

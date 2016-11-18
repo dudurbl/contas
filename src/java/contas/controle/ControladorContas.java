@@ -94,13 +94,8 @@ public class ControladorContas extends HttpServlet {
     }// </editor-fold>
 
     private String salvar(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Contas conta = new Contas();
-        
-        if(!request.getParameterMap().containsKey("codigo")){
         String sCodigo = request.getParameter("codigo");
         Integer codigo = Integer.valueOf(sCodigo);
-        conta = RepositorioContas.getConta(codigo);
-        }
         String descricao = request.getParameter("descricao");
         String sValor = request.getParameter("valor");
         Double valor = Double.valueOf(sValor);
@@ -109,16 +104,18 @@ public class ControladorContas extends HttpServlet {
         Date dataVencimento = formater.parse(sDataVencimento);
         SimpleDateFormat AppDateFormat = new SimpleDateFormat("dd-MM-yyyy");
         
-        
+        Contas conta = new Contas();
+        conta.setIdconta(codigo);
         conta.setDescricao(descricao);
         conta.setValor(valor);
         conta.setData_vencimento(dataVencimento);
-        if(!request.getParameterMap().containsKey("codigo")){
+        Contas aux = RepositorioContas.getConta(codigo);
+       if(aux != null){
             RepositorioContas.atualizar(conta);
         }else{
-        RepositorioContas.inserir(conta);
+            RepositorioContas.inserir(conta);
         }
-        return "listar";
+        return "novo";
     }
 
     private String listar(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -132,6 +129,7 @@ public class ControladorContas extends HttpServlet {
         Integer codigo = Integer.valueOf(sCodigo);
         Contas c = RepositorioContas.getConta(codigo);
         request.setAttribute("conta", c);
+        request.setAttribute("codigo", codigo);
         return "novo";
     }
 
@@ -139,21 +137,23 @@ public class ControladorContas extends HttpServlet {
         String sCodigo = request.getParameter("codigo");
         Integer codigo = Integer.valueOf(sCodigo);
         RepositorioContas.excluir(codigo);
-        return "listar";
+        return "novo";
     }
 
     private String pagar(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String sCodigo = request.getParameter("codigo");
         Integer codigo = Integer.valueOf(sCodigo);
         RepositorioContas.pagarConta(codigo);
-        return "listar";
+        return "novo";
     }
 
       private String novo(HttpServletRequest request, HttpServletResponse response) throws Exception {
         List<Contas> listaPagar = RepositorioContas.getContasAPagar();
         List<Contas> listaPago = RepositorioContas.getContasPagas();
+        int codigo = RepositorioContas.getPproximoId();
         request.setAttribute("listaPagar", listaPagar);
         request.setAttribute("listaPago", listaPago);
+        request.setAttribute("proximoId", codigo);
         return "cadastro.jsp";
     }
 

@@ -9,9 +9,14 @@
     <body>
         <h1>Cadastro de contas</h1>
         <form method="POST" action="salvar">
-            <c:if test="%{#parameters.conta == null}">
-                Código: <input type="text" name="codigo" disabled="true" value="${conta.idconta}"><br>
-            </c:if>
+            <c:choose>
+                <c:when test="${not empty conta}">
+                    Código: <input type="text" name="codigo" readonly="readonly" value="${conta.idconta}"><br> 
+                </c:when>
+                <c:otherwise>
+                    Código: <input type="text" name="codigo" readonly="readonly" value="${proximoId}"><br> 
+                </c:otherwise>
+                    </c:choose>
             Descrição: <input type="text" name="descricao" value="${conta.descricao}"><br>
             Valor: <input type="text" name="valor" value="${conta.valor}"><br>
             Data de vencimento <input type="date" name="data_vencimento" value="${conta.data_vencimento}"><br>
@@ -70,6 +75,6 @@
         </table>
         <br/>
         <br/>
-        <a href="listar">Voltar</a> <br>
+        <a href="listar">Listar</a> <br>
     </body>
 </html>
